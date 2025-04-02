@@ -1,6 +1,8 @@
 using AutoMapper;
 using Domain.Entities;
 using Shared.Input;
+using Shared.Input.Creation;
+using Shared.Input.Update;
 using Shared.Output;
 
 namespace InnowiseIntership;
@@ -21,5 +23,10 @@ public class MappingProfile : Profile
         CreateMap<CourierCreationDto, Courier>();
         CreateMap<ReviewCreationDto, Review>();
         CreateMap<OrderCreationDto, Order>();
+        
+        CreateMap<UserForUpdateDto, User>();
+        CreateMap<CourierForUpdateDto, Courier>();
+        CreateMap<ReviewForUpdateDto, Review>();
+        CreateMap<OrderForUpdateDto, Order>();
     }
 }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
 
-public class Courier
+public record Courier
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("courier_id")]

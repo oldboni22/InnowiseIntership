@@ -1,4 +1,5 @@
 using Exceptions;
+using Exceptions.NotFound;
 using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
 

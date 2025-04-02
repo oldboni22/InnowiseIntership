@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
 
-public class User
+public record User
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("user_id")]

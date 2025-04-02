@@ -2,11 +2,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
 
-public class Order
+public record Order
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("order_id")]
     public int Id { get; init; }
+    
+    public required string Status { get; set; }
     
     public DateTime CreatedAt { get; init; }
     public DateTime DeliveredAt { get; set; }

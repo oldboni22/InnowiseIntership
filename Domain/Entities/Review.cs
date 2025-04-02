@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
 
-public class Review
+public record Review
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("rating_id")]
