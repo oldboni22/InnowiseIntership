@@ -20,5 +20,5 @@ public class RepositoryManager(RepositoryContext context) : IRepositoryManager
     public ICourierRepository Courier => _courier.Value;
     public IUserRepository User => _user.Value;
     public IOrderRepository Order => _order.Value;
-    public IReviewRepository ReviewRepository => _review.Value;
+    public IReviewRepository Review => _review.Value;
 }

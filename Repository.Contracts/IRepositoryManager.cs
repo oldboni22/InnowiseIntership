@@ -7,5 +7,5 @@ public interface IRepositoryManager
     ICourierRepository Courier { get; }
     IUserRepository User { get; }
     IOrderRepository Order { get; }
-    IReviewRepository ReviewRepository { get; }
+    IReviewRepository Review{ get; }
 }
