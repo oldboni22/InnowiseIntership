@@ -1,3 +1,3 @@
 namespace Shared.Input.Creation;
 
-public record OrderCreationDto(DateTime CreatedAt,string Address);
+public record OrderCreationDto(string Comment,string Address);

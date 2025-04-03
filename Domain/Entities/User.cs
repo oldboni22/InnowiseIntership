@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
@@ -6,6 +7,7 @@ public record User
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("user_id")]
+    [Key]
     public int Id { get; init; }
 
     public required string FirstName { get; init; }
@@ -15,5 +17,6 @@ public record User
     
     public required string PasswordHash { get; set; }
     public required string PasswordSalt { get; set; }
+    
     
 }

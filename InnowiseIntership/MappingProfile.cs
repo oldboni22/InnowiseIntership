@@ -16,7 +16,15 @@ public class MappingProfile : Profile
             options.MapFrom(user => $"{user.FirstName} {user.LastName}");
         });
         CreateMap<Courier, CourierDto>();
-        CreateMap<Review, ReviewDto>();
+        CreateMap<Review, ReviewDto>()
+            .ForCtorParam("UserName", options =>
+            {
+                options.MapFrom(review => $"{review.User.FirstName} {review.User.LastName}");
+            })
+            .ForCtorParam("CourierName", options => 
+            {
+                options.MapFrom(review => review.Courier.Name );
+            });
         CreateMap<Order, OrderDto>();
         
         CreateMap<UserCreationDto, User>();
@@ -26,7 +34,5 @@ public class MappingProfile : Profile
         
         CreateMap<UserForUpdateDto, User>();
         CreateMap<CourierForUpdateDto, Courier>();
-        CreateMap<ReviewForUpdateDto, Review>();
-        CreateMap<OrderForUpdateDto, Order>();
     }
 }

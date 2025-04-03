@@ -1,5 +1,8 @@
+using System.Security.Cryptography;
+using System.Text;
 using AutoMapper;
 using Domain.Entities;
+using Exceptions.AlreadyExists;
 using Exceptions.NotFound;
 using Repository.Contracts;
 using Service.Contracts;
@@ -14,6 +17,21 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
     private readonly IRepositoryManager _repositoryManager = repositoryManager;
     private readonly IMapper _mapper = mapper;
 
+    private string GeneratePasswordHash(string password, out string salt)
+    {
+        var bytes = RandomNumberGenerator.GetBytes(32);
+        salt = Convert.ToBase64String(bytes);
+
+        string hash;
+        using (var sha = SHA256.Create())
+        {
+            bytes = Encoding.UTF8.GetBytes(password + salt);
+            hash = Convert.ToBase64String(sha.ComputeHash(bytes));
+        }
+
+        return hash;
+    }
+    
     public async Task<IEnumerable<UserDto>> GetUsersAsync(bool trackChanges)
     {
         var users = await _repositoryManager.User.GetUsersAsync(trackChanges);
@@ -34,7 +52,17 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
 
     public async Task CreateUser(UserCreationDto user)
     {
+        var userEntity = await _repositoryManager.User.GetUserByEmailAsync(user.Email, false);
+        if ( userEntity != null)
+            throw new UserAlreadyExistsException(user.Email);
+            
         var entity = _mapper.Map<User>(user);
+        
+        entity = entity with
+        {
+            PasswordHash = GeneratePasswordHash(user.Password,out var salt),
+            PasswordSalt = salt
+        };
         
         _repositoryManager.User.CreateUser(entity);
         await _repositoryManager.SaveAsync();

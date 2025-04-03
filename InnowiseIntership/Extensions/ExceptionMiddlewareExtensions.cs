@@ -1,4 +1,5 @@
 using Exceptions;
+using Exceptions.AlreadyExists;
 using Exceptions.NotFound;
 using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
@@ -29,6 +30,7 @@ public static class ExceptionMiddlewareExtensions
                 {
                     NotFoundException => StatusCodes.Status404NotFound,
                     BadRequestException => StatusCodes.Status400BadRequest,
+                    AlreadyExistsException => StatusCodes.Status303SeeOther,
                     _ => StatusCodes.Status500InternalServerError,
                 };
 
