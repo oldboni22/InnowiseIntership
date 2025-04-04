@@ -14,6 +14,14 @@ public static class ServiceCollectionExtensions
             options.UseSqlServer(configuration
                 .GetConnectionString("sqlConnection")));
     }
+
+    public static void AddRepositoryContext(this IServiceCollection collection,IConfiguration configuration)
+    {
+        collection.AddDbContext<RepositoryContext>(options =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("sqlConnection"));
+        });
+    }
     
     public static void AddRepositoryManager(this IServiceCollection collection)
     {

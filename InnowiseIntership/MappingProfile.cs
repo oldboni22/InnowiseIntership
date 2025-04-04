@@ -34,5 +34,6 @@ public class MappingProfile : Profile
         
         CreateMap<UserForUpdateDto, User>();
         CreateMap<CourierForUpdateDto, Courier>();
+        CreateMap<OrderForUpdateDto, Order>();
     }
 }

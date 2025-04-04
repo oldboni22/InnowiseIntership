@@ -4,6 +4,7 @@ using Exceptions.NotFound;
 using Repository.Contracts;
 using Service.Contracts;
 using Shared.Input.Creation;
+using Shared.Input.Update;
 using Shared.Output;
 
 namespace Service;
@@ -46,19 +47,26 @@ public class OrderService(IRepositoryManager repositoryManager, IMapper mapper) 
         return result;
     }
 
-    public async Task CreateOrder(int userId, OrderCreationDto order)
+    public async Task<OrderDto> CreateOrderAsync(int userId, OrderCreationDto order)
     {
         var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
         if (user == null)
             throw new UserNotFoundException(userId);
 
         var entity = _mapper.Map<Order>(order);
+        entity = entity with
+        {
+            CreatedAt = DateTime.UtcNow
+        };
+        
         _repositoryManager.Order.CreateOrder(entity);
         
         await _repositoryManager.SaveAsync();
+
+        return _mapper.Map<OrderDto>(entity);
     }
 
-    public async Task DeleteOrder(int userId, int id)
+    public async Task DeleteOrderAsync(int userId, int id)
     {
         var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
         if (user == null)
@@ -69,6 +77,20 @@ public class OrderService(IRepositoryManager repositoryManager, IMapper mapper) 
             throw new OrderNotFoundException(id);
         
         _repositoryManager.Order.DeleteOrder(order);
+        await _repositoryManager.SaveAsync();
+    }
+
+    public async Task UpdateOrderAsync(int userId, int id, OrderForUpdateDto order)
+    {
+        var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
+        if (user == null)
+            throw new UserNotFoundException(userId);
+        
+        var entity = await _repositoryManager.Order.GetOrderByIdAsync(userId,id, true);
+        if (entity == null)
+            throw new OrderNotFoundException(id);
+
+        _mapper.Map(order, entity);
         await _repositoryManager.SaveAsync();
     }
 }

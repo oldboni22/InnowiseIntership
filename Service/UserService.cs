@@ -50,7 +50,7 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
         return result;
     }
 
-    public async Task CreateUser(UserCreationDto user)
+    public async Task<UserDto> CreateUserAsync(UserCreationDto user)
     {
         var userEntity = await _repositoryManager.User.GetUserByEmailAsync(user.Email, false);
         if ( userEntity != null)
@@ -66,6 +66,8 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
         
         _repositoryManager.User.CreateUser(entity);
         await _repositoryManager.SaveAsync();
+
+        return _mapper.Map<UserDto>(entity);
     }
 
     public async Task DeleteUserAsync(int id)

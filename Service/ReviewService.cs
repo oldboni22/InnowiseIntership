@@ -55,7 +55,7 @@ public class ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
         return result;
     }
 
-    public async Task CreateReview(int userId, int courierId, ReviewCreationDto review)
+    public async Task<ReviewDto> CreateReviewAsync(int userId, int courierId, ReviewCreationDto review)
     {
         var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
         if (user == null)
@@ -69,14 +69,17 @@ public class ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
         entity = entity with
         {
             UserId = userId,
-            CourierId = courierId
+            CourierId = courierId,
+            PostedAt = DateTime.UtcNow
         };
         
         _repositoryManager.Review.CreateReview(entity);
         await _repositoryManager.SaveAsync();
+
+        return _mapper.Map<ReviewDto>(entity);
     }
 
-    public async Task DeleteReview(int userId, int courierId, int id)
+    public async Task DeleteReviewAsync(int userId, int courierId, int id)
     {
         var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
         if (user == null)

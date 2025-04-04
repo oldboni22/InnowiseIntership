@@ -24,15 +24,17 @@ public class CourierService(IRepositoryManager repositoryManager, IMapper mapper
         return result;
     }
 
-    public async Task CreateCourierAsync(CourierCreationDto courier)
+    public async Task<CourierDto> CreateCourierAsync(CourierCreationDto courier)
     {
         var entity = _mapper.Map<Courier>(courier);
 
         _repositoryManager.Courier.CreateCourier(entity);
         await _repositoryManager.SaveAsync();
+
+        return _mapper.Map<CourierDto>(entity);
     }
 
-    public async Task UpdateCourier(int id, CourierForUpdateDto courier)
+    public async Task UpdateCourierAsync(int id, CourierForUpdateDto courier)
     {
         var entity = await GetCourierByIdAsync(id,true);
         if (entity == null)
