@@ -1,4 +1,5 @@
 using Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -11,6 +12,7 @@ namespace InnowiseIntership.ApiControllers;
 
 [Route("api/Users")]
 [ApiController]
+[Authorize("CRUD:users")]
 public class UserController(IServiceManager service) : ControllerBase
 {
     private readonly IServiceManager _service = service;
