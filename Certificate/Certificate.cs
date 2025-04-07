@@ -5,8 +5,7 @@ namespace InnowiseIntership;
 
 public interface ICertificate
 {
-    public RsaSecurityKey PublicKey { get; }
-    public RsaSecurityKey PrivateKey { get; }
+    RsaSecurityKey Rsa { get; }
 }
 
 public class Certificate : ICertificate
@@ -20,20 +19,24 @@ public class Certificate : ICertificate
 
         if (File.Exists(publicKeyPath) && File.Exists(privateKeyPath))
         {
-            rsa.ImportFromPem(File.ReadAllText(publicKeyPath));
-            rsa.ImportFromPem(File.ReadAllText(privateKeyPath));
-
-            PublicKey = new RsaSecurityKey(rsa.ExportParameters(true));
-            PrivateKey = new RsaSecurityKey(rsa.ExportParameters(false));
+            try
+            {
+                rsa.ImportFromPem(File.ReadAllText(publicKeyPath));
+                rsa.ImportFromPem(File.ReadAllText(privateKeyPath));
+                
+                Rsa = new RsaSecurityKey(rsa);
+            }
+            catch
+            {
+                
+            }
+            
         }
-
-        PublicKey = new RsaSecurityKey(rsa.ExportParameters(true));
-        PrivateKey = new RsaSecurityKey(rsa.ExportParameters(false));
         
         File.WriteAllText(publicKeyPath,rsa.ExportRSAPublicKeyPem());
         File.WriteAllText(privateKeyPath,rsa.ExportRSAPrivateKeyPem());
-    }
 
-    public RsaSecurityKey PublicKey { get; }
-    public RsaSecurityKey PrivateKey { get; }
+        Rsa = new RsaSecurityKey(rsa);
+    }
+    public RsaSecurityKey Rsa { get; }
 }

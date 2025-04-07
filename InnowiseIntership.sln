@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Exceptions\Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{D792558F-7C96-4817-BB71-C76A5ABA996C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Certificate", "Certificate\Certificate.csproj", "{83F43991-F447-474C-85EB-802AF8797013}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{D792558F-7C96-4817-BB71-C76A5ABA996C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D792558F-7C96-4817-BB71-C76A5ABA996C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D792558F-7C96-4817-BB71-C76A5ABA996C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83F43991-F447-474C-85EB-802AF8797013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83F43991-F447-474C-85EB-802AF8797013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83F43991-F447-474C-85EB-802AF8797013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83F43991-F447-474C-85EB-802AF8797013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

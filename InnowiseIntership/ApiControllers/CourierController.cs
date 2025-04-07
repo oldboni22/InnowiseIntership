@@ -1,4 +1,5 @@
 using Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.Input;
@@ -7,6 +8,7 @@ using Shared.Input.Creation;
 namespace InnowiseIntership.ApiControllers;
 
 [Route("api/Couriers")]
+[Authorize]
 public class CourierController(IServiceManager service) : ControllerBase
 {
     private readonly IServiceManager _service = service;

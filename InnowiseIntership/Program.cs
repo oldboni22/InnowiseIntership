@@ -4,7 +4,7 @@ using InnowiseIntership.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureSerilog();
 
-builder.Services.AddCertificateAndAuth0(builder.Configuration);
+builder.Services.AddAuth0(builder.Configuration);
 builder.Services.AddAuthentication();
 
 builder.Services.AddAutoMapper(typeof(Program));

@@ -1,4 +1,5 @@
 using Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.Input.Creation;
@@ -8,6 +9,7 @@ namespace InnowiseIntership.ApiControllers;
 
 [Route("api/Reviews")]
 [ApiController]
+[Authorize]
 public class ReviewController(IServiceManager service) : ControllerBase
 {
     private IServiceManager _service = service;
@@ -43,6 +45,4 @@ public class ReviewController(IServiceManager service) : ControllerBase
         var created = await _service.Review.CreateReviewAsync(userId, courierId, review);
         return CreatedAtRoute("GetById", new { userId, courierId, created.Id }, created);
     }
-    
-    
 }

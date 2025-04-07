@@ -1,4 +1,4 @@
 namespace Shared.Input.Creation;
 
 public record UserCreationDto 
-    (string FirstName,string LastName,string Email,string Password);
+    (string FirstName,string LastName,string Email,string Password,bool Admin);

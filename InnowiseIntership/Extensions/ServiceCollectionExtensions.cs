@@ -1,7 +1,7 @@
+using Auth0.AspNetCore.Authentication;
 using InnowiseIntership.Auth0;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Repository;
 using Repository.Contracts;
 using Service;
@@ -36,40 +36,33 @@ public static class ServiceCollectionExtensions
         collection.AddScoped<IServiceManager, ServiceManager>();
     }
 
-
-    public static void AddCertificateAndAuth0(this IServiceCollection collection,IConfiguration configuration)
+    public static void AddAuth0(this IServiceCollection collection,IConfiguration configuration)
     {
-
         var certificate = new Certificate(configuration
             .GetSection("Certificate")
             .GetSection("path").Value!);
-
-        var domain = $"https://{configuration.GetSection("Auth0").GetSection("Domain").Value}/";
-        var audience = configuration.GetSection("Auth0").GetSection("Audience").Value;
         
         collection.AddSingleton<ICertificate>(certificate);
-        collection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = true,
-                        ValidateIssuer = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidAudience = audience,
-                        ValidIssuer = domain,
-                        IssuerSigningKey = certificate.PublicKey
-                    };
-                }
-            );
-
-        collection.AddAuthorization(options =>
+        
+        var domain = $"https://{configuration.GetSection("Auth0").GetSection("Domain").Value}/";
+        var clientId = configuration.GetSection("Auth0").GetSection("ClientId").Value;
+        var audience = configuration.GetSection("Auth0").GetSection("Audience").Value;
+        
+        collection.AddAuth0WebAppAuthentication(options =>
         {
-            options.AddPolicy("CRUD:users",
-                policy => policy.Requirements.Add(
-                    new HasScopeRequirement("CRUD:users",domain)));
+            options.Domain = domain;
+            options.ClientId = clientId;
+            options.ClientAssertionSecurityKey = certificate.Rsa;
+        }).WithAccessToken(options =>
+        {
+            options.Audience = audience;
         });
+
+        collection.AddAuthorizationBuilder()
+            .AddPolicy("CRUD:users", policy => policy.Requirements.Add(
+                new HasScopeRequirement("CRUD:users", domain)));
+
+        collection.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
     }
     
 }

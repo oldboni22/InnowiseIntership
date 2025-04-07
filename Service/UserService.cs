@@ -6,6 +6,7 @@ using Exceptions.AlreadyExists;
 using Exceptions.NotFound;
 using Repository.Contracts;
 using Service.Contracts;
+using Shared.Input;
 using Shared.Input.Creation;
 using Shared.Input.Update;
 using Shared.Output;
@@ -85,9 +86,15 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
         var entity = await _repositoryManager.User.GetUserByIdAsync(id, true);
         if(entity == null)
             throw new UserNotFoundException(id);
-
+        
         _mapper.Map(user, entity);
-        await _repositoryManager.SaveAsync();
 
+        entity = entity with
+        {
+            PasswordHash = GeneratePasswordHash(user.Password,out var salt),
+            PasswordSalt = salt
+        };
+        
+        await _repositoryManager.SaveAsync();
     }
 }

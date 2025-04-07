@@ -1,6 +1,9 @@
 namespace Exceptions.NotFound;
 
-public class UserNotFoundException(int id) : NotFoundException($"A user with id = {id} was not found")
+public class UserNotFoundException : NotFoundException
 {
 
+    public UserNotFoundException(int id) : base($"User with id {id} not found"){ }
+    public UserNotFoundException(string email) : base($"A user with id = {email} was not found")
+    { }
 }
