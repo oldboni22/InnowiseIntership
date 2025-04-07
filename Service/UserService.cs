@@ -18,6 +18,19 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
     private readonly IRepositoryManager _repositoryManager = repositoryManager;
     private readonly IMapper _mapper = mapper;
 
+    private async Task<bool> CheckIfUserExistsByEmailAsync(string email)
+    {
+        var user = await _repositoryManager.User.GetUserByEmailAsync(email, false);
+        return user != null;
+    }
+    private async Task<User> TryGetUserByIdAsync(int id,bool trackChanges)
+    {
+        var user = await _repositoryManager.User.GetUserByIdAsync(id, trackChanges);
+        if (user == null)
+            throw new UserNotFoundException(id);
+        return user;
+    }
+    
     private string GeneratePasswordHash(string password, out string salt)
     {
         var bytes = RandomNumberGenerator.GetBytes(32);
@@ -43,9 +56,7 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
 
     public async Task<UserDto> GetUserByIdAsync(int id, bool trackChanges)
     {
-        var user = await _repositoryManager.User.GetUserByIdAsync(id, false);
-        if (user == null)
-            throw new UserNotFoundException(id);
+        var user = await TryGetUserByIdAsync(id,false);
         
         var result = _mapper.Map<UserDto>(user);
         return result;
@@ -53,11 +64,10 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
 
     public async Task<UserDto> CreateUserAsync(UserCreationDto user)
     {
-        var userEntity = await _repositoryManager.User.GetUserByEmailAsync(user.Email, false);
-        if ( userEntity != null)
-            throw new UserAlreadyExistsException(user.Email);
-            
-        var entity = _mapper.Map<User>(user);
+       if(await CheckIfUserExistsByEmailAsync(user.Email) is true)
+           throw new UserAlreadyExistsException(user.Email);
+       
+       var entity = _mapper.Map<User>(user);
         
         entity = entity with
         {
@@ -73,9 +83,7 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
 
     public async Task DeleteUserAsync(int id)
     {
-        var user = await _repositoryManager.User.GetUserByIdAsync(id, false);
-        if(user == null)
-            throw new UserNotFoundException(id);
+        var user = await TryGetUserByIdAsync(id,false);
         
         _repositoryManager.User.DeleteUser(user);
         await _repositoryManager.SaveAsync();
@@ -83,10 +91,7 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
 
     public async Task UpdateUserAsync(int id, UserForUpdateDto user)
     {
-        var entity = await _repositoryManager.User.GetUserByIdAsync(id, true);
-        if(entity == null)
-            throw new UserNotFoundException(id);
-        
+        var entity = await TryGetUserByIdAsync(id,true);
         _mapper.Map(user, entity);
 
         entity = entity with

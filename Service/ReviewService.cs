@@ -12,11 +12,34 @@ public class ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
 {
     private readonly IRepositoryManager _repositoryManager = repositoryManager;
     private readonly IMapper _mapper = mapper;
+    
+    private async Task<User> TryGetUserByIdAsync(int id,bool trackChanges)
+    {
+        var user = await _repositoryManager.User.GetUserByIdAsync(id, trackChanges);
+        if (user == null)
+            throw new UserNotFoundException(id);
+        return user;
+    }
+    private async Task<Courier> TryGetCourierAsync(int id,bool trackChanges)
+    {
+        var courier = await _repositoryManager.Courier.GetCourierByIdAsync(id,trackChanges);
+        if (courier == null)
+            throw new CourierFoundException(id);
+        
+        return courier;
+    }
+
+    private async Task<Review> TryGetReviewByIdAsync(int userId, int courierId, int id, bool trackChanges)
+    {
+        var review = await _repositoryManager.Review.GetReviewByIdAsync(userId, courierId, id,trackChanges);
+        if (review == null)
+            throw new ReviewFoundException(id);
+        return review;
+    } 
+    
     public async Task<IEnumerable<ReviewDto>> GetUserReviewsAsync(int userId, bool trackChanges)
     {
-        var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
-        if (user == null)
-            throw new UserNotFoundException(userId);
+        var user = await TryGetUserByIdAsync(userId, trackChanges);
 
         var reviews = _repositoryManager.Review.GetUserReviewsAsync(userId, trackChanges);
         var result = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
@@ -26,9 +49,7 @@ public class ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
 
     public async Task<IEnumerable<ReviewDto>> GetCourierReviewsAsync(int courierId, bool trackChanges)
     {
-        var courier = await _repositoryManager.Courier.GetCourierByIdAsync(courierId, false);
-        if (courier == null)
-            throw new CourierFoundException(courierId);
+        var courier = await TryGetCourierAsync(courierId, trackChanges);
         
         var reviews = _repositoryManager.Review.GetCourierReviewsAsync(courierId, trackChanges);
         var result = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
@@ -38,17 +59,9 @@ public class ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
 
     public async Task<ReviewDto> GetReviewByIdAsync(int userId, int courierId, int id, bool trackChanges)
     {
-        var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
-        if (user == null)
-            throw new UserNotFoundException(userId);
-        
-        var courier = await _repositoryManager.Courier.GetCourierByIdAsync(courierId, false);
-        if (courier == null)
-            throw new CourierFoundException(courierId);
-
-        var review = await _repositoryManager.Review.GetReviewByIdAsync(userId, courierId, id,trackChanges);
-        if (review == null)
-            throw new ReviewFoundException(id);
+        var user = await TryGetUserByIdAsync(userId,trackChanges);
+        var courier = await TryGetCourierAsync(courierId, trackChanges);
+        var review = await TryGetReviewByIdAsync(userId, courierId, id, trackChanges);
         
         var result = _mapper.Map<ReviewDto>(review);
 
@@ -57,13 +70,8 @@ public class ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
 
     public async Task<ReviewDto> CreateReviewAsync(int userId, int courierId, ReviewCreationDto review)
     {
-        var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
-        if (user == null)
-            throw new UserNotFoundException(userId);
-        
-        var courier = await _repositoryManager.Courier.GetCourierByIdAsync(courierId, false);
-        if (courier == null)
-            throw new CourierFoundException(courierId);
+        var user = await TryGetUserByIdAsync(userId,false);
+        var courier = await TryGetCourierAsync(courierId, false);
 
         var entity = _mapper.Map<Review>(review);
         entity = entity with
@@ -81,17 +89,9 @@ public class ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
 
     public async Task DeleteReviewAsync(int userId, int courierId, int id)
     {
-        var user = await _repositoryManager.User.GetUserByIdAsync(userId, false);
-        if (user == null)
-            throw new UserNotFoundException(userId);
-        
-        var courier = await _repositoryManager.Courier.GetCourierByIdAsync(courierId, false);
-        if (courier == null)
-            throw new CourierFoundException(courierId);
-
-        var review = await _repositoryManager.Review.GetReviewByIdAsync(userId, courierId, id,false);
-        if (review == null)
-            throw new ReviewFoundException(id);
+        var user = await TryGetUserByIdAsync(userId,false);
+        var courier = await TryGetCourierAsync(courierId, false);
+        var review = await TryGetReviewByIdAsync(userId, courierId, id, false);
         
         _repositoryManager.Review.DeleteReview(review);
         await _repositoryManager.SaveAsync();

@@ -1,4 +1,5 @@
 using Exceptions;
+using InnowiseIntership.ActionFilters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -21,21 +22,17 @@ public class CourierController(IServiceManager service) : ControllerBase
     }
 
     [HttpPost]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> CreateCourierAsync([FromBody] CourierCreationDto courier)
     {
-        if (courier == null)
-            throw new CourierCreationDtoBadRequestException();
-
         var created =  await _service.Courier.CreateCourierAsync(courier);
         return CreatedAtRoute("GetByIdAsync", new { id = created.Id }, created);
     }
 
     [HttpPut("{id:int}")]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> UpdateCourierAsync(int id, [FromBody] CourierForUpdateDto courier)
     {
-        if (courier == null)
-            throw new CourierUpdateDtoBadRequestException();
-
         await _service.Courier.UpdateCourierAsync(id, courier);
         return NoContent();
     }

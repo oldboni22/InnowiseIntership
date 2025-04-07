@@ -1,4 +1,5 @@
 using Exceptions;
+using InnowiseIntership.ActionFilters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -36,12 +37,10 @@ public class ReviewController(IServiceManager service) : ControllerBase
     }
         
     [HttpPost("{userId,courierId}")]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> CreateReviewAsync(int userId,int courierId,
         [FromBody] ReviewCreationDto review)
     {
-        if (review == null)
-            throw new ReviewCreationDtoBadRequestException();
-        
         var created = await _service.Review.CreateReviewAsync(userId, courierId, review);
         return CreatedAtRoute("GetById", new { userId, courierId, created.Id }, created);
     }

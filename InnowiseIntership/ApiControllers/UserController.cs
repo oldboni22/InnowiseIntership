@@ -1,4 +1,5 @@
 using Exceptions;
+using InnowiseIntership.ActionFilters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -32,11 +33,9 @@ public class UserController(IServiceManager service) : ControllerBase
     }
 
     [HttpPost]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> CreateUserAsync([FromBody] UserCreationDto user)
     {
-        if (user == null)
-            throw new UserCreationDtoBadRequestException();
-        
         var created = await _service.User.CreateUserAsync(user);
         return CreatedAtRoute("GetUserById", new { id = created.Id }, created);
     }
@@ -49,10 +48,9 @@ public class UserController(IServiceManager service) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> UpdateUserAsync(int id,[FromBody] UserForUpdateDto user)
     {
-        if (user == null)
-            throw new UserUpdateDtoBadRequestException();
         await _service.User.UpdateUserAsync(id, user);
         return NoContent();
     }

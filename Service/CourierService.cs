@@ -14,11 +14,18 @@ public class CourierService(IRepositoryManager repositoryManager, IMapper mapper
     private readonly IRepositoryManager _repositoryManager = repositoryManager;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<CourierDto> GetCourierByIdAsync(int id, bool trackChanges)
+    private async Task<Courier> TryGetCourierAsync(int id,bool trackChanges)
     {
-        var courier = await _repositoryManager.Courier.GetCourierByIdAsync(id,false);
+        var courier = await _repositoryManager.Courier.GetCourierByIdAsync(id,trackChanges);
         if (courier == null)
             throw new CourierFoundException(id);
+        
+        return courier;
+    }
+    
+    public async Task<CourierDto> GetCourierByIdAsync(int id, bool trackChanges)
+    {
+        var courier = await TryGetCourierAsync(id,trackChanges);
 
         var result = _mapper.Map<CourierDto>(courier);
         return result;
@@ -36,9 +43,7 @@ public class CourierService(IRepositoryManager repositoryManager, IMapper mapper
 
     public async Task UpdateCourierAsync(int id, CourierForUpdateDto courier)
     {
-        var entity = await GetCourierByIdAsync(id,true);
-        if (entity == null)
-            throw new CourierFoundException(id);
+        var entity = await TryGetCourierAsync(id,true);    
 
         _mapper.Map(courier,entity);
         await _repositoryManager.SaveAsync();
