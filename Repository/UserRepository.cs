@@ -1,15 +1,22 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contracts;
+using Shared.Input.PagingParameters;
+using Shared.Output;
 
 namespace Repository;
 
 public class UserRepository(RepositoryContext context) : RepositoryBase<User>(context),IUserRepository
 {
-    public async Task<IEnumerable<User>> GetUsersAsync(bool trackChanges) => 
-        await FindAll(trackChanges)
+    public async Task<PagedList<User>> GetUsersAsync(bool trackChanges, UserRequestParameters parameters)
+    {
+        var users = await FindAll(trackChanges)
             .OrderBy(user => user.FirstName)
             .ToListAsync();
+        
+        return PagedList<User>.ToPagedList(users, parameters.PageNumber, parameters.PageSize);
+    }
+
     public async Task<User?> GetUserByIdAsync(int id, bool trackChanges) =>
         await FindByCondition(user => user.Id == id,false)
             .SingleOrDefaultAsync();

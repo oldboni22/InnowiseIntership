@@ -1,9 +1,11 @@
+using System.Text.Json;
 using Exceptions;
 using InnowiseIntership.ActionFilters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.Input.Creation;
+using Shared.Input.PagingParameters;
 
 namespace InnowiseIntership.ApiControllers;
 
@@ -16,17 +18,21 @@ public class ReviewController(IServiceManager service) : ControllerBase
     private IServiceManager _service = service;
 
     [HttpGet("User/{userId:int}")]
-    public async Task<IActionResult> GetUserReviewsAsync(int userId)
+    public async Task<IActionResult> GetUserReviewsAsync(int userId, [FromQuery]  ReviewRequestParameters parameters)
     {
-        var reviews = await _service.Review.GetUserReviewsAsync(userId, false);
-        return Ok(reviews);
+        var reviews = await _service.Review.GetUserReviewsAsync(userId, false,parameters);
+        
+        Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(reviews.metaData));
+        return Ok(reviews.reviews);
     }
     
     [HttpGet("Courier/{courierId:int}")]
-    public async Task<IActionResult> GetCourierReviewsAsync(int courierId)
+    public async Task<IActionResult> GetCourierReviewsAsync(int courierId, [FromQuery] ReviewRequestParameters parameters)
     {
-        var reviews = await _service.Review.GetCourierReviewsAsync(courierId, false);
-        return Ok(reviews);
+        var reviews = await _service.Review.GetCourierReviewsAsync(courierId, false,parameters);
+        
+        Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(reviews.metaData));
+        return Ok(reviews.reviews);
     }
 
     [HttpGet("{userId,courierId,id}")]

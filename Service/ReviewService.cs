@@ -4,6 +4,7 @@ using Exceptions.NotFound;
 using Repository.Contracts;
 using Service.Contracts;
 using Shared.Input.Creation;
+using Shared.Input.PagingParameters;
 using Shared.Output;
 
 namespace Service;
@@ -37,24 +38,26 @@ public class ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
         return review;
     } 
     
-    public async Task<IEnumerable<ReviewDto>> GetUserReviewsAsync(int userId, bool trackChanges)
+    public async Task<(IEnumerable<ReviewDto> reviews, PagedListMetaData metaData)> GetUserReviewsAsync(int userId, bool trackChanges
+    , ReviewRequestParameters parameters)
     {
         var user = await TryGetUserByIdAsync(userId, trackChanges);
 
-        var reviews = _repositoryManager.Review.GetUserReviewsAsync(userId, trackChanges);
-        var result = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
+        var pagedReviews = await _repositoryManager.Review.GetUserReviewsAsync(userId, trackChanges,parameters);
+        var reviews = _mapper.Map<IEnumerable<ReviewDto>>(pagedReviews);
 
-        return result;
+        return (reviews,pagedReviews.MetaData);
     }
 
-    public async Task<IEnumerable<ReviewDto>> GetCourierReviewsAsync(int courierId, bool trackChanges)
+    public async Task<(IEnumerable<ReviewDto> reviews, PagedListMetaData metaData)> GetCourierReviewsAsync(int courierId, bool trackChanges
+        ,ReviewRequestParameters parameters)
     {
         var courier = await TryGetCourierAsync(courierId, trackChanges);
         
-        var reviews = _repositoryManager.Review.GetCourierReviewsAsync(courierId, trackChanges);
-        var result = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
+        var pagedReviews = await _repositoryManager.Review.GetCourierReviewsAsync(courierId, trackChanges,parameters);
+        var reviews = _mapper.Map<IEnumerable<ReviewDto>>(pagedReviews);
 
-        return result;
+        return (reviews,pagedReviews.MetaData);
     }
 
     public async Task<ReviewDto> GetReviewByIdAsync(int userId, int courierId, int id, bool trackChanges)

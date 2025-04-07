@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Exceptions;
 using InnowiseIntership.ActionFilters;
 using Microsoft.AspNetCore.Authorization;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.Input.Creation;
+using Shared.Input.PagingParameters;
 using Shared.Input.Update;
 using Shared.Output;
 
@@ -19,10 +21,12 @@ public class UserController(IServiceManager service) : ControllerBase
     private readonly IServiceManager _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers([FromQuery] UserRequestParameters parameters)
     {
-        var users = await _service.User.GetUsersAsync(false);
-        return Ok(users);
+        var pagedResult = await _service.User.GetUsersAsync(false,parameters);
+        
+        Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(pagedResult.metaData));
+        return Ok(pagedResult.users);
     }
 
     [HttpGet("{id:int}", Name = "GetUserById")]

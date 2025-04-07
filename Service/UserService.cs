@@ -8,6 +8,7 @@ using Repository.Contracts;
 using Service.Contracts;
 using Shared.Input;
 using Shared.Input.Creation;
+using Shared.Input.PagingParameters;
 using Shared.Input.Update;
 using Shared.Output;
 
@@ -46,12 +47,12 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
         return hash;
     }
     
-    public async Task<IEnumerable<UserDto>> GetUsersAsync(bool trackChanges)
+    public async Task<(IEnumerable<UserDto>, PagedListMetaData)> GetUsersAsync(bool trackChanges,UserRequestParameters parameters)
     {
-        var users = await _repositoryManager.User.GetUsersAsync(trackChanges);
+        var pagedUsers = await _repositoryManager.User.GetUsersAsync(trackChanges,parameters);
         
-        var result = _mapper.Map<IEnumerable<UserDto>>(users);
-        return result;
+        var users = _mapper.Map<IEnumerable<UserDto>>(pagedUsers);
+        return (users, pagedUsers.MetaData);
     }
 
     public async Task<UserDto> GetUserByIdAsync(int id, bool trackChanges)
