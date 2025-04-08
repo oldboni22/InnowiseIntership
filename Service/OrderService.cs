@@ -4,6 +4,7 @@ using Exceptions.NotFound;
 using Repository.Contracts;
 using Service.Contracts;
 using Shared.Input.Creation;
+using Shared.Input.PagingParameters;
 using Shared.Input.Update;
 using Shared.Output;
 
@@ -31,22 +32,24 @@ public class OrderService(IRepositoryManager repositoryManager, IMapper mapper) 
         return user;
     }
     
-    public async Task<IEnumerable<OrderDto>> GetOrdersAsync(int userId, bool trackChanges)
+    public async Task<(IEnumerable<OrderDto> orders, PagedListMetaData metaData)> GetOrdersAsync(int userId, bool trackChanges
+        ,OrderRequestParameters  parameters)
     {
         var user = await TryGetUserByIdAsync(userId, trackChanges);
 
-        var orders = await _repositoryManager.Order.GetOrdersAsync(userId, trackChanges);
-        var result = _mapper.Map<IEnumerable<OrderDto>>(orders);
+        var pagedOrders = await _repositoryManager.Order.GetOrdersAsync(userId, trackChanges,parameters);
+        var orders = _mapper.Map<IEnumerable<OrderDto>>(pagedOrders);
 
-        return result;
+        return (orders, pagedOrders.MetaData);
     }
 
-    public async Task<IEnumerable<OrderDto>> GetPendingOrdersAsync(bool trackChanges)
+    public async Task<(IEnumerable<OrderDto> orders, PagedListMetaData metaData)> GetPendingOrdersAsync(bool trackChanges
+        ,OrderRequestParameters parameters)
     {
-        var orders = await _repositoryManager.Order.GetPendingOrdersAsync(trackChanges);
-        var result = _mapper.Map<IEnumerable<OrderDto>>(orders);
+        var pagedOrders = await _repositoryManager.Order.GetPendingOrdersAsync(trackChanges,parameters);
+        var orders = _mapper.Map<IEnumerable<OrderDto>>(pagedOrders);
 
-        return result;
+        return (orders, pagedOrders.MetaData);
     }
 
     public async Task<OrderDto> GetOrderByIdAsync(int userId, int id, bool trackChanges)
@@ -74,16 +77,7 @@ public class OrderService(IRepositoryManager repositoryManager, IMapper mapper) 
 
         return _mapper.Map<OrderDto>(entity);
     }
-
-    public async Task DeleteOrderAsync(int userId, int id)
-    {
-        var user = await TryGetUserByIdAsync(userId, false);
-        var order = await TryGetOrderByIdAsync(userId,id,false);
-        
-        _repositoryManager.Order.DeleteOrder(order);
-        await _repositoryManager.SaveAsync();
-    }
-
+    
     public async Task UpdateOrderAsync(int userId, int id, OrderForUpdateDto order)
     {
         var user = await TryGetUserByIdAsync(userId, false);

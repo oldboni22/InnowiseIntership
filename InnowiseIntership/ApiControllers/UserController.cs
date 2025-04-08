@@ -21,7 +21,7 @@ public class UserController(IServiceManager service) : ControllerBase
     private readonly IServiceManager _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetUsers([FromQuery] UserRequestParameters parameters)
+    public async Task<IActionResult> GetUsersAsync([FromQuery] UserRequestParameters parameters)
     {
         var pagedResult = await _service.User.GetUsersAsync(false,parameters);
         

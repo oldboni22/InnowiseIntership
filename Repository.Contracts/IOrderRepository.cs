@@ -1,12 +1,13 @@
 using Domain.Entities;
+using Shared.Input.PagingParameters;
+using Shared.Output;
 
 namespace Repository.Contracts;
 
 public interface IOrderRepository
 {
-    Task<IEnumerable<Order>> GetOrdersAsync(int userId,bool trackChanges);
-    Task<IEnumerable<Order>> GetPendingOrdersAsync(bool trackChanges);
+    Task<PagedList<Order>> GetOrdersAsync(int userId,bool trackChanges,OrderRequestParameters parameters);
+    Task<PagedList<Order>> GetPendingOrdersAsync(bool trackChanges,OrderRequestParameters parameters);
     Task<Order?> GetOrderByIdAsync(int userId,int id, bool trackChanges);
     void CreateOrder(Order order);
-    void DeleteOrder(Order order);
 }
