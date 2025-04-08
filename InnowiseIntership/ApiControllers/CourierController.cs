@@ -23,17 +23,17 @@ public class CourierController(IServiceManager service) : ControllerBase
 
     [HttpPost]
     [ServiceFilter(typeof(ValidationFilter))]
-    public async Task<IActionResult> CreateCourierAsync([FromBody] CourierCreationDto courier)
+    public async Task<IActionResult> CreateCourierAsync([FromBody] CourierCreationDto courierDto)
     {
-        var created =  await _service.Courier.CreateCourierAsync(courier);
+        var created =  await _service.Courier.CreateCourierAsync(courierDto);
         return CreatedAtRoute("GetByIdAsync", new { id = created.Id }, created);
     }
 
     [HttpPut("{id:int}")]
     [ServiceFilter(typeof(ValidationFilter))]
-    public async Task<IActionResult> UpdateCourierAsync(int id, [FromBody] CourierForUpdateDto courier)
+    public async Task<IActionResult> UpdateCourierAsync(int id, [FromBody] CourierForUpdateDto courierDto)
     {
-        await _service.Courier.UpdateCourierAsync(id, courier);
+        await _service.Courier.UpdateCourierAsync(id, courierDto);
         return NoContent();
     }
 }

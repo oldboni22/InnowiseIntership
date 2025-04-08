@@ -45,9 +45,9 @@ public class ReviewController(IServiceManager service) : ControllerBase
     [HttpPost("{userId,courierId}")]
     [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> CreateReviewAsync(int userId,int courierId,
-        [FromBody] ReviewCreationDto review)
+        [FromBody] ReviewCreationDto reviewDto)
     {
-        var created = await _service.Review.CreateReviewAsync(userId, courierId, review);
+        var created = await _service.Review.CreateReviewAsync(userId, courierId, reviewDto);
         return CreatedAtRoute("GetById", new { userId, courierId, created.Id }, created);
     }
 }

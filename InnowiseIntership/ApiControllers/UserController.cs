@@ -38,9 +38,9 @@ public class UserController(IServiceManager service) : ControllerBase
 
     [HttpPost]
     [ServiceFilter(typeof(ValidationFilter))]
-    public async Task<IActionResult> CreateUserAsync([FromBody] UserCreationDto user)
+    public async Task<IActionResult> CreateUserAsync([FromBody] UserCreationDto userDto)
     {
-        var created = await _service.User.CreateUserAsync(user);
+        var created = await _service.User.CreateUserAsync(userDto);
         return CreatedAtRoute("GetUserById", new { id = created.Id }, created);
     }
 
@@ -53,9 +53,9 @@ public class UserController(IServiceManager service) : ControllerBase
 
     [HttpPut("{id:int}")]
     [ServiceFilter(typeof(ValidationFilter))]
-    public async Task<IActionResult> UpdateUserAsync(int id,[FromBody] UserForUpdateDto user)
+    public async Task<IActionResult> UpdateUserAsync(int id,[FromBody] UserForUpdateDto userDto)
     {
-        await _service.User.UpdateUserAsync(id, user);
+        await _service.User.UpdateUserAsync(id, userDto);
         return NoContent();
     }
 
