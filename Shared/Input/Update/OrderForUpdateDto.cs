@@ -11,7 +11,7 @@ public record OrderForUpdateDto : IValidatableObject
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if(Status != "Pending" 
-           && Status != "Shipped" 
+           && Status != "Shipping" 
            && Status != "Delivered" 
            && Status != "Cancelled")
             yield return new ValidationResult("Wrong status", [nameof(Status)]);

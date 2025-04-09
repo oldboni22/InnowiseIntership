@@ -18,7 +18,7 @@ public class OrderService(IRepositoryManager repositoryManager, IMapper mapper) 
     private async Task<Order> TryGetOrderByIdAsync(int userId,int id,bool trackChanges)
     {
         var order = await _repositoryManager.Order.GetOrderByIdAsync(userId, id,trackChanges);
-        if (order != null)
+        if (order == null)
             throw new OrderNotFoundException(id);
         
         return order;

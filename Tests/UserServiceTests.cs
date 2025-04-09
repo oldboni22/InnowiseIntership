@@ -3,7 +3,6 @@ using Domain.Entities;
 using Exceptions.AlreadyExists;
 using Exceptions.NotFound;
 using Moq;
-using Repository;
 using Repository.Contracts;
 using Service;
 using Shared.Input.Creation;
