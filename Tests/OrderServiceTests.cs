@@ -21,12 +21,14 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public async Task GetCourierByIdAsync_CourierDto()
+    public async Task GetOrderByIdAsync_OrderDto()
     {
         int userId = 1;
         int courierId = 1;
         int orderId = 1;
-        SetUpUserAndCourier(userId, courierId);
+        
+        SetUpUser(userId);
+        SetUpCourier(courierId);    
 
         var order = new Order
         {
@@ -37,7 +39,7 @@ public class OrderServiceTests
             Status = "Shipping",
             Description = ""
         };
-        var orderDto = new OrderDto(orderId,"Address");
+        var orderDto = new OrderDto(orderId,"Address","Shipping");
         
         _repositoryManagerMock.Setup(r 
             => r.Order.GetOrderByIdAsync(userId,orderId,false)).ReturnsAsync(order);
@@ -48,11 +50,12 @@ public class OrderServiceTests
         var result = await _orderService.GetOrderByIdAsync(userId, orderId,false);
         
         Assert.Equal(orderId, result.Id);
-        Assert.Equal(result.Address,order.Address);
+        Assert.Equal(order.Address, result.Address);
+        Assert.Equal("Shipping", result.Status);
     }
+    
 
-
-    private void SetUpUserAndCourier(int userId,int courierId)
+    private void SetUpUser(int userId)
     {
         var user = new User
         {
@@ -63,18 +66,18 @@ public class OrderServiceTests
             PasswordHash = "123", PasswordSalt = "123"
 
         };
-
+        _repositoryManagerMock.Setup(r 
+            => r.User.GetUserByIdAsync(userId,false)).ReturnsAsync(user);
+    }
+    private void SetUpCourier(int courierId)
+    {
         var courier = new Courier
         {
             Id = courierId,
             Name = "John",
             Vehicle = "Govnovoz"
         };
-        
-        _repositoryManagerMock.Setup(r 
-            => r.User.GetUserByIdAsync(userId,false)).ReturnsAsync(user);
         _repositoryManagerMock.Setup(r 
             => r.Courier.GetCourierByIdAsync(courierId,false)).ReturnsAsync(courier);
-        
     }
 }
