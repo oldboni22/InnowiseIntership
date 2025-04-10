@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contracts;
+using Repository.Extensions;
 using Shared.Input.Request;
 using Shared.Output;
 
@@ -11,7 +12,7 @@ public class UserRepository(RepositoryContext context) : RepositoryBase<User>(co
     public async Task<PagedList<User>> GetUsersAsync(bool trackChanges, UserRequestParameters parameters)
     {
         var users = await FindAll(trackChanges)
-            .OrderBy(user => user.FirstName)
+            .Sort(parameters.OrderQuery)
             .ToListAsync();
         
         return PagedList<User>.ToPagedList(users, parameters.PageNumber, parameters.PageSize);

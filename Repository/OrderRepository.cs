@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contracts;
+using Repository.Extensions;
 using Shared;
 using Shared.Input.Request;
 using Shared.Output;
@@ -14,7 +15,7 @@ public class OrderRepository(RepositoryContext context) : RepositoryBase<Order>(
     {
         var orders = await FindByCondition(order => order.UserId == userId
                 && order.OrderStatus == parameters.OrderStatus,false)
-            .OrderBy(order => order.OrderStatus)
+            .Sort(parameters.OrderQuery)
             .ToListAsync();
         
         return PagedList<Order>.ToPagedList(orders, parameters.PageNumber, parameters.PageSize);
@@ -23,7 +24,7 @@ public class OrderRepository(RepositoryContext context) : RepositoryBase<Order>(
     public async Task<PagedList<Order>> GetPendingOrdersAsync(bool trackChanges, OrderRequestParameters parameters)
     {
         var orders = await FindByCondition(order => order.OrderStatus == OrderStatus.Pending, trackChanges)
-            .OrderBy(order => order.CreatedAt)
+            .Sort(parameters.OrderQuery)
             .ToListAsync();
          
         return PagedList<Order>.ToPagedList(orders, parameters.PageNumber, parameters.PageSize);

@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contracts;
+using Repository.Extensions;
 using Shared.Input.Request;
 using Shared.Output;
 
@@ -12,7 +13,7 @@ public class ReviewRepository(RepositoryContext context) : RepositoryBase<Review
         ,ReviewRequestParameters parameters)
     {
         var reviews = await FindByCondition(review => review.UserId == userId, trackChanges)
-            .OrderBy(review => review.Rating)
+            .Sort(parameters.OrderQuery)
             .ToListAsync();
         
         return PagedList<Review>.ToPagedList(reviews,parameters.PageNumber, parameters.PageSize);
@@ -22,7 +23,7 @@ public class ReviewRepository(RepositoryContext context) : RepositoryBase<Review
         , ReviewRequestParameters parameters)
     {
         var reviews = await FindByCondition(review => review.CourierId == courierId, trackChanges)
-            .OrderBy(review => review.Rating)
+            .Sort(parameters.OrderQuery)
             .ToListAsync();
         
         return PagedList<Review>.ToPagedList(reviews,parameters.PageNumber, parameters.PageSize);
