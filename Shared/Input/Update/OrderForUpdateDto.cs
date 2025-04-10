@@ -2,19 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shared.Input.Update;
 
-public record OrderForUpdateDto : IValidatableObject
+public record OrderForUpdateDto
 {
     [Required]
-    private string Status { get; init; }
+    private OrderStatus Status { get; init; }
     
     int CourierId { get; init; }
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if(Status != "Pending" 
-           && Status != "Shipping" 
-           && Status != "Delivered" 
-           && Status != "Cancelled")
-            yield return new ValidationResult("Wrong status", [nameof(Status)]);
-            
-    }
 }

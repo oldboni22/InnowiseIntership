@@ -3,6 +3,7 @@ using Domain.Entities;
 using Exceptions.NotFound;
 using Repository.Contracts;
 using Service.Contracts;
+using Shared;
 using Shared.Input.Creation;
 using Shared.Input.Request;
 using Shared.Input.Update;
@@ -59,7 +60,8 @@ public class OrderService(IRepositoryManager repositoryManager, IMapper mapper) 
         var entity = _mapper.Map<Order>(order);
         entity = entity with
         {
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            OrderStatus = OrderStatus.Pending
         };
         
         _repositoryManager.Order.CreateOrder(entity);
