@@ -4,7 +4,7 @@ using Exceptions.NotFound;
 using Repository.Contracts;
 using Service.Contracts;
 using Shared.Input.Creation;
-using Shared.Input.PagingParameters;
+using Shared.Input.Request;
 using Shared.Output;
 
 namespace Service;

@@ -1,8 +1,11 @@
 using AutoMapper;
 using Domain.Entities;
+using Exceptions.NotFound;
 using Moq;
 using Repository.Contracts;
 using Service;
+using Shared;
+using Shared.Input.Request;
 using Shared.Output;
 
 namespace Tests;
@@ -36,7 +39,7 @@ public class OrderServiceTests
             CourierId = courierId,
             UserId = userId,
             Address = "Address",
-            Status = "Shipping",
+            OrderStatus = OrderStatus.Pending,
             Description = ""
         };
         var orderDto = new OrderDto(orderId,"Address","Shipping");
@@ -53,8 +56,21 @@ public class OrderServiceTests
         Assert.Equal(order.Address, result.Address);
         Assert.Equal("Shipping", result.Status);
     }
-    
 
+    [Fact]
+    public async Task GetOrderByIdAsync_ThrowsUserNotFoundException()
+    {
+        int userId = 1;
+        int orderId = 1;
+        
+        _repositoryManagerMock.Setup(r 
+            => r.User.GetUserByIdAsync(userId, false)).ReturnsAsync(() => null);
+        
+        await Assert.ThrowsAsync<UserNotFoundException>(() => _orderService.GetOrderByIdAsync(userId, orderId, false));
+        
+    }
+    
+    
     private void SetUpUser(int userId)
     {
         var user = new User

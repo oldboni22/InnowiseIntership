@@ -1,4 +1,4 @@
-namespace Shared.Input.PagingParameters;
+namespace Shared.Input.Request;
 
 public class UserRequestParameters : RequestParameters
 {

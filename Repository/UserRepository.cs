@@ -1,7 +1,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository.Contracts;
-using Shared.Input.PagingParameters;
+using Shared.Input.Request;
 using Shared.Output;
 
 namespace Repository;

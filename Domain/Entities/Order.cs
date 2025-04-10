@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Shared;
 
 namespace Domain.Entities;
 
@@ -10,8 +11,7 @@ public record Order
     [Key]
     public int Id { get; init; }
     
-    public required string Status { get; set; }
-    
+    public required OrderStatus OrderStatus { get; set; }
      
     public DateTime CreatedAt { get; init; }
     public DateTime DeliveredAt { get; set; }

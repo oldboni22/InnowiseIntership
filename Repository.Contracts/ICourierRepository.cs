@@ -1,5 +1,4 @@
 using Domain.Entities;
-using Shared.Input.PagingParameters;
 
 namespace Repository.Contracts;
 

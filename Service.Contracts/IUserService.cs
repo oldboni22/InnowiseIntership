@@ -1,6 +1,6 @@
 using Shared.Input;
 using Shared.Input.Creation;
-using Shared.Input.PagingParameters;
+using Shared.Input.Request;
 using Shared.Input.Update;
 using Shared.Output;
 

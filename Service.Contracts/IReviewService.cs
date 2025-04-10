@@ -1,6 +1,6 @@
 using System.Collections;
 using Shared.Input.Creation;
-using Shared.Input.PagingParameters;
+using Shared.Input.Request;
 using Shared.Output;
 
 namespace Service.Contracts;

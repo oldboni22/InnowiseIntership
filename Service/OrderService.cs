@@ -4,7 +4,7 @@ using Exceptions.NotFound;
 using Repository.Contracts;
 using Service.Contracts;
 using Shared.Input.Creation;
-using Shared.Input.PagingParameters;
+using Shared.Input.Request;
 using Shared.Input.Update;
 using Shared.Output;
 
@@ -42,16 +42,7 @@ public class OrderService(IRepositoryManager repositoryManager, IMapper mapper) 
 
         return (orders, pagedOrders.MetaData);
     }
-
-    public async Task<(IEnumerable<OrderDto> orders, PagedListMetaData metaData)> GetPendingOrdersAsync(bool trackChanges
-        ,OrderRequestParameters parameters)
-    {
-        var pagedOrders = await _repositoryManager.Order.GetPendingOrdersAsync(trackChanges,parameters);
-        var orders = _mapper.Map<IEnumerable<OrderDto>>(pagedOrders);
-
-        return (orders, pagedOrders.MetaData);
-    }
-
+    
     public async Task<OrderDto> GetOrderByIdAsync(int userId, int id, bool trackChanges)
     {
         var user = await TryGetUserByIdAsync(userId, trackChanges);

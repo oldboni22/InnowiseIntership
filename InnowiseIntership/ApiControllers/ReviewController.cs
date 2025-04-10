@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.Input.Creation;
-using Shared.Input.PagingParameters;
+using Shared.Input.Request;
 
 namespace InnowiseIntership.ApiControllers;
 
