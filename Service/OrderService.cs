@@ -43,7 +43,16 @@ public class OrderService(IRepositoryManager repositoryManager, IMapper mapper) 
 
         return (orders, pagedOrders.MetaData);
     }
-    
+
+    public async Task<(IEnumerable<OrderDto> orders, PagedListMetaData metaData)> GetPendingOrdersAsync(
+        bool trackChanges, OrderRequestParameters parameters)
+    {
+        var pagedOrders = await _repositoryManager.Order.GetPendingOrdersAsync(trackChanges, parameters);
+        var orders = _mapper.Map<IEnumerable<OrderDto>>(pagedOrders);
+
+        return (orders, pagedOrders.MetaData);
+    }
+
     public async Task<OrderDto> GetOrderByIdAsync(int userId, int id, bool trackChanges)
     {
         var user = await TryGetUserByIdAsync(userId, trackChanges);
