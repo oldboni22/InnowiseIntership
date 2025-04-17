@@ -25,12 +25,11 @@ public class Certificate : ICertificate
                 rsa.ImportFromPem(File.ReadAllText(privateKeyPath));
                 
                 Rsa = new RsaSecurityKey(rsa);
+                return;
             }
             catch
             {
-                
             }
-            
         }
         
         File.WriteAllText(publicKeyPath,rsa.ExportRSAPublicKeyPem());

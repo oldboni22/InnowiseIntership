@@ -1,4 +1,5 @@
 using System.Text.Json;
+using InnowiseIntership.ActionFilters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -16,15 +17,17 @@ public class OrderController(IServiceManager service) : ControllerBase
     private readonly IServiceManager _service = service;
     
     [HttpGet]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> GetPendingOrdersAsync([FromQuery] OrderRequestParameters parameters)
     {
         var pagedResult = await _service.Order.GetPendingOrdersAsync(false,parameters);
-         
+        
         Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(pagedResult.metaData));
         return Ok(pagedResult.orders); 
     }
     
     [HttpGet("{userId:int}")]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> GetOrdersAsync(int userId,[FromQuery] OrderRequestParameters parameters)
     {
         var pagedResult = await _service.Order.GetOrdersAsync(userId,false,parameters);
@@ -41,6 +44,7 @@ public class OrderController(IServiceManager service) : ControllerBase
     }
     
     [HttpPost("{userId:int}")]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> CreateOrderAsync(int  userId,[FromBody] OrderCreationDto order)
     {
         var result = await _service.Order.CreateOrderAsync(userId, order);
@@ -48,6 +52,7 @@ public class OrderController(IServiceManager service) : ControllerBase
     }
 
     [HttpPut("{userId},{orderId}")]
+    [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> UpdateOrderAsync(int userId,int orderId,[FromBody] OrderForUpdateDto order)
     {
         await _service.Order.UpdateOrderAsync(userId, orderId, order);

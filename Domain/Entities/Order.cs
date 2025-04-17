@@ -1,9 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Domain.Entities;
 
+[Index(nameof(CourierId),Name = "Index_CourierId")]
+[Index(nameof(UserId),Name = "Index_UserId")]
 public record Order
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

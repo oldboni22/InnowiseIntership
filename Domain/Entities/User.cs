@@ -1,8 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Entities;
 
+[Index(nameof(Email),IsUnique = true,Name = "Index_Email")]
+[Index(nameof(FirstName),nameof(LastName),Name = "Index_FirstName_LastName")]
 public record User
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

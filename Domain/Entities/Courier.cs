@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Entities;
 
+[Index(nameof(Name),Name = "Index_Name")]
 public record Courier
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

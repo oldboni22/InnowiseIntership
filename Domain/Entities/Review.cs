@@ -1,8 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Entities;
 
+[Index(nameof(CourierId),Name = "Index_CourierId")]
+[Index(nameof(UserId),Name = "Index_UserId")]
+[Index(nameof(Rating),Name = "Index_Rating",AllDescending = false)]
 public record Review
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
