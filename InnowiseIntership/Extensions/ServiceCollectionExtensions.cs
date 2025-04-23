@@ -1,5 +1,6 @@
 using Auth0.AspNetCore.Authentication;
 using InnowiseIntership.Auth0;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Repository;
@@ -63,6 +64,22 @@ public static class ServiceCollectionExtensions
                 new HasScopeRequirement("CRUD:users", domain)));
 
         collection.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+    }
+
+    public static void AddCaching(this IServiceCollection collection)
+    {
+        collection.AddResponseCaching();
+    }
+
+    public static void AddCacheHeaders(this IServiceCollection collection)
+    {
+        collection.AddHttpCacheHeaders((expOptions) =>
+            {
+                expOptions.MaxAge = 15;
+                expOptions.CacheLocation = CacheLocation.Public;
+            });
+        
+        
     }
     
 }

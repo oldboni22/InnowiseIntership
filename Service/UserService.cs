@@ -44,6 +44,8 @@ public class UserService(IRepositoryManager repositoryManager, IMapper mapper) :
             hash = Convert.ToBase64String(sha.ComputeHash(bytes));
         }
 
+        
+        
         return hash;
     }
     

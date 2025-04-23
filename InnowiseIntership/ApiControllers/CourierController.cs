@@ -1,5 +1,6 @@
 using Exceptions;
 using InnowiseIntership.ActionFilters;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -15,6 +16,7 @@ public class CourierController(IServiceManager service) : ControllerBase
     private readonly IServiceManager _service = service;
 
     [HttpGet("{id:int}", Name = "GetCourierById")]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Private)]
     public async Task<IActionResult> GetCourierByIdAsync(int id)
     {
         var courier = await _service.Courier.GetCourierByIdAsync(id,false);

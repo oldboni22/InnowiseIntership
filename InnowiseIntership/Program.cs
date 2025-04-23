@@ -20,7 +20,15 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 builder.Services.AddScoped<ValidationFilter>();
-builder.Services.AddControllers();
+builder.Services.AddControllers(config =>
+{
+    
+});
+
+
+builder.Services.AddCaching();
+builder.Services.AddCacheHeaders();
+
 
 var app = builder.Build();
 
@@ -28,7 +36,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.ConfigureExceptionHandling();
+
 app.UseHttpsRedirection();
+app.UseHttpCacheHeaders();
 
 app.MapControllers();
 

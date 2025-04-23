@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Exceptions;
 using InnowiseIntership.ActionFilters;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -18,6 +19,7 @@ public class ReviewController(IServiceManager service) : ControllerBase
     private IServiceManager _service = service;
 
     [HttpGet("User/{userId:int}")]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Private)]
     public async Task<IActionResult> GetUserReviewsAsync(int userId, [FromQuery]  ReviewRequestParameters parameters)
     {
         var reviews = await _service.Review.GetUserReviewsAsync(userId, false,parameters);
@@ -27,6 +29,7 @@ public class ReviewController(IServiceManager service) : ControllerBase
     }
     
     [HttpGet("Courier/{courierId:int}")]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Private)]
     public async Task<IActionResult> GetCourierReviewsAsync(int courierId, [FromQuery] ReviewRequestParameters parameters)
     {
         var reviews = await _service.Review.GetCourierReviewsAsync(courierId, false,parameters);
@@ -36,6 +39,7 @@ public class ReviewController(IServiceManager service) : ControllerBase
     }
 
     [HttpGet("{userId,courierId,id}")]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Private)]
     public async Task<IActionResult> GetReviewByIdAsync(int userId,int courierId,int id)
     {
         var review = await _service.Review.GetReviewByIdAsync(userId, courierId, id,false);

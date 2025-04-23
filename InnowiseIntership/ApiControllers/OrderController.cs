@@ -1,5 +1,6 @@
 using System.Text.Json;
 using InnowiseIntership.ActionFilters;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -17,6 +18,7 @@ public class OrderController(IServiceManager service) : ControllerBase
     private readonly IServiceManager _service = service;
     
     [HttpGet]
+    
     [ServiceFilter(typeof(ValidationFilter))]
     public async Task<IActionResult> GetPendingOrdersAsync([FromQuery] OrderRequestParameters parameters)
     {
@@ -37,6 +39,7 @@ public class OrderController(IServiceManager service) : ControllerBase
     }
 
     [HttpGet("{userId},{orderId}")]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Private)]
     public async Task<IActionResult> GetOrderByIdAsync(int userId, int orderId)
     {
         var result = await _service.Order.GetOrderByIdAsync(userId, orderId,false);

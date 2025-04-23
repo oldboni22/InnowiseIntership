@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Exceptions;
 using InnowiseIntership.ActionFilters;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,7 @@ public class UserController(IServiceManager service) : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetUserById")]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Private)]
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
         var user = await _service.User.GetUserByIdAsync(id, false);
