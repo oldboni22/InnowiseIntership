@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using InnowiseIntership;
 using InnowiseIntership.ActionFilters;
 using InnowiseIntership.Extensions;
@@ -26,6 +27,9 @@ builder.Services.AddControllers(config =>
 });
 
 
+builder.Services.AddMemoryCache();
+builder.Services.AddRateLimit();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddCaching();
 builder.Services.AddCacheHeaders();
 
@@ -36,6 +40,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.ConfigureExceptionHandling();
+app.UseIpRateLimiting();
 
 app.UseHttpsRedirection();
 app.UseHttpCacheHeaders();

@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Auth0.AspNetCore.Authentication;
 using InnowiseIntership.Auth0;
 using Marvin.Cache.Headers;
@@ -78,8 +79,28 @@ public static class ServiceCollectionExtensions
                 expOptions.MaxAge = 15;
                 expOptions.CacheLocation = CacheLocation.Public;
             });
-        
-        
+    }
+
+    public static void AddRateLimit(this IServiceCollection collection)
+    {
+        var rules = new List<RateLimitRule>
+        {
+            new RateLimitRule()
+            {   
+                Endpoint = "*",
+                Limit = 5,
+                Period = "5m"
+            },
+        };
+
+        collection.Configure<IpRateLimitOptions>(options =>
+        {
+            options.GeneralRules = rules;
+        });
+        collection.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+        collection.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+        collection.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+
     }
     
 }
