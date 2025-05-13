@@ -14,7 +14,7 @@ public class GetUsersHandler(IRepositoryManager repositoryManager,IMapper mapper
     
     public async Task<(IEnumerable<UserDto>,PagedListMetaData)> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        var pagedUsers = await _repositoryManager.User.GetUsersAsync(false,request.parameters);
+        var pagedUsers = await _repositoryManager.User.GetUsersAsync(false,request.Parameters);
         var users = _mapper.Map<IEnumerable<UserDto>>(pagedUsers);
         return (users, pagedUsers.MetaData);
     }
