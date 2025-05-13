@@ -13,6 +13,7 @@
         <PackageReference Include="Auth0.AuthenticationApi" Version="7.35.0" />
         <PackageReference Include="AutoMapper" Version="14.0.0" />
         <PackageReference Include="Marvin.Cache.Headers" Version="7.2.0" />
+        <PackageReference Include="MediatR" Version="12.5.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
@@ -34,6 +35,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Certificate\Certificate.csproj" />
+      <ProjectReference Include="..\CQRS\CQRS.csproj" />
       <ProjectReference Include="..\Domain\Domain.csproj" />
       <ProjectReference Include="..\Exceptions\Exceptions.csproj" />
       <ProjectReference Include="..\Repository.Contracts\Repository.Contracts.csproj" />

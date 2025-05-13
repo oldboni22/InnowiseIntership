@@ -3,6 +3,7 @@ using InnowiseIntership;
 using InnowiseIntership.ActionFilters;
 using InnowiseIntership.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using CQRS;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureSerilog();
@@ -21,11 +22,16 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 builder.Services.AddScoped<ValidationFilter>();
+
+builder.Services.AddMediatR(configuration =>
+{
+    configuration.RegisterServicesFromAssembly(typeof(CQRS.Reference).Assembly);
+});
+
 builder.Services.AddControllers(config =>
 {
     
 });
-
 
 builder.Services.AddMemoryCache();
 builder.Services.AddRateLimit();

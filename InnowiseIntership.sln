@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Certificate", "Certificate\Certificate.csproj", "{83F43991-F447-474C-85EB-802AF8797013}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS", "CQRS\CQRS.csproj", "{F587D927-EA6F-4301-A6C1-87ED23035305}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{83F43991-F447-474C-85EB-802AF8797013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83F43991-F447-474C-85EB-802AF8797013}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83F43991-F447-474C-85EB-802AF8797013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F587D927-EA6F-4301-A6C1-87ED23035305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F587D927-EA6F-4301-A6C1-87ED23035305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F587D927-EA6F-4301-A6C1-87ED23035305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F587D927-EA6F-4301-A6C1-87ED23035305}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
